@@ -3,61 +3,200 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trader — Research Status</title>
+  <title>Trader — Research Dashboard</title>
   <style>
     :root { color-scheme: dark; }
-    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#0b0f14; color:#e8eef5; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
-    h1 { font-size: 22px; margin: 0 0 10px; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:#0b0f14;
+      color:#e8eef5;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 26px 16px 40px; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
     .sub { color:#a9b6c5; margin: 0 0 18px; }
-    .card { background:#111826; border:1px solid #223046; border-radius: 12px; padding: 16px; margin: 12px 0; }
-    .k { color:#9fb1c5; width: 180px; display:inline-block; }
-    .v { color:#e8eef5; }
+
+    .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+    .card {
+      background:#111826;
+      border:1px solid #223046;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.05);
+    }
+    .card h2 { font-size: 14px; margin:0 0 10px; color:#b7c5d6; font-weight: 600; }
+
+    .pill {
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px; border-radius: 999px;
+      background:#0a1220; border:1px solid #223046;
+      font-size: 12px; color:#b7c5d6;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background:#6b7280; }
+    .dot.ok { background:#22c55e; }
+    .dot.warn { background:#f59e0b; }
+    .dot.bad { background:#ef4444; }
+
+    .kpi { display:flex; flex-direction:column; gap:4px; padding: 12px; border-radius: 12px; background:#0a1220; border:1px solid #223046; }
+    .kpi .label { font-size: 12px; color:#9fb1c5; }
+    .kpi .value { font-size: 20px; font-weight: 700; letter-spacing: .2px; }
+    .kpi .hint { font-size: 12px; color:#93a4b8; }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
     code { background:#0a1220; padding:2px 6px; border-radius: 6px; }
+    a { color:#7ab7ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .row { display:flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .small { color:#a9b6c5; font-size: 13px; }
-    a { color:#7ab7ff; }
+
+    .table { width:100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; border:1px solid #223046; }
+    .table th, .table td { padding: 10px 10px; border-bottom: 1px solid #223046; font-size: 13px; }
+    .table th { text-align: left; color:#a9b6c5; font-weight: 600; background:#0a1220; }
+    .table td { color:#e8eef5; }
+    .table tr:last-child td { border-bottom: none; }
+
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
+
+    @media (max-width: 900px) {
+      .col-8, .col-6 { grid-column: span 12; }
+      .col-4 { grid-column: span 6; }
+      .col-3 { grid-column: span 6; }
+    }
+    @media (max-width: 520px) {
+      .col-4, .col-3 { grid-column: span 12; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Trader — Research / Backtest Status</h1>
-    <p class="sub">This page is safe to share. It only shows high-level progress and summary numbers.</p>
-
-    <div class="card" id="statusCard">
-      <div><span class="k">Updated</span> <span class="v" id="updatedAt">(loading)</span></div>
-      <div><span class="k">Phase</span> <span class="v" id="phase">(loading)</span></div>
-      <div><span class="k">Current task</span> <span class="v" id="task">(loading)</span></div>
-      <div><span class="k">Last backtest</span> <span class="v" id="lastBacktest">(loading)</span></div>
-      <div><span class="k">Last optimization</span> <span class="v" id="lastOpt">(loading)</span></div>
-      <div style="margin-top:10px" class="small" id="notes"></div>
+    <div class="row" style="align-items:flex-end;">
+      <div>
+        <h1>Trader — Research Dashboard</h1>
+        <div class="sub">Public, shareable progress + latest results. Data loads from <code>status.json</code>.</div>
+      </div>
+      <div class="pill"><span class="dot" id="dot"></span><span id="phasePill">loading…</span></div>
     </div>
 
-    <div class="card">
-      <div class="small">Data source for this page: <code>status.json</code></div>
-      <div class="small">Direct link: <a href="./status.json">status.json</a></div>
-      <div class="small">If this looks stale, it means the pipeline hasn’t updated the status file yet.</div>
-    </div>
+    <div class="grid">
+      <div class="card col-12">
+        <h2>Now</h2>
+        <div class="row">
+          <div class="small"><span class="mono">Updated:</span> <span id="updatedAt">(loading)</span></div>
+          <div class="small"><span class="mono">Pipeline step:</span> <span id="pipelineStep">(loading)</span></div>
+        </div>
+        <div style="margin-top:10px; font-size:16px; font-weight:650;" id="task">(loading)</div>
+        <div class="small" style="margin-top:8px;" id="notes"></div>
+      </div>
 
-    <div class="card">
-      <div class="small">Repo: <a href="https://github.com/hostlogic1/Trader">github.com/hostlogic1/Trader</a></div>
+      <div class="card col-12">
+        <h2>Latest Backtest</h2>
+        <div class="grid" style="gap:10px;">
+          <div class="kpi col-3">
+            <div class="label">Profit Factor</div>
+            <div class="value" id="kpiPF">—</div>
+            <div class="hint">Primary objective</div>
+          </div>
+          <div class="kpi col-3">
+            <div class="label">Trades</div>
+            <div class="value" id="kpiTrades">—</div>
+            <div class="hint">We want 5–10/day (eventually)</div>
+          </div>
+          <div class="kpi col-3">
+            <div class="label">Return %</div>
+            <div class="value" id="kpiRet">—</div>
+            <div class="hint">Secondary</div>
+          </div>
+          <div class="kpi col-3">
+            <div class="label">Max Drawdown %</div>
+            <div class="value" id="kpiDD">—</div>
+            <div class="hint">Risk constraint</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;" class="small" id="backtestMeta"></div>
+      </div>
+
+      <div class="card col-12">
+        <h2>Latest Optimization</h2>
+        <div class="small" id="optSummary">(none yet)</div>
+      </div>
+
+      <div class="card col-12">
+        <h2>Links</h2>
+        <div class="small">Status JSON: <a href="./status.json">status.json</a></div>
+        <div class="small">Repo: <a href="https://github.com/hostlogic1/Trader">github.com/hostlogic1/Trader</a></div>
+      </div>
     </div>
   </div>
 
 <script>
+function fmt(x, digits=2) {
+  if (x === null || x === undefined) return '—';
+  if (typeof x === 'number') {
+    if (!Number.isFinite(x)) return '—';
+    return x.toFixed(digits);
+  }
+  return String(x);
+}
+
+function setDot(phase) {
+  const dot = document.getElementById('dot');
+  dot.classList.remove('ok','warn','bad');
+  if (!phase) return;
+  const p = String(phase).toLowerCase();
+  if (p.includes('error')) dot.classList.add('bad');
+  else if (p.includes('tuning')) dot.classList.add('warn');
+  else dot.classList.add('ok');
+}
+
 async function load() {
   try {
     const res = await fetch('./status.json', { cache: 'no-store' });
     const s = await res.json();
+
+    const phase = s.phase || 'unknown';
+    document.getElementById('phasePill').textContent = `Phase: ${phase}`;
+    setDot(phase);
+
     document.getElementById('updatedAt').textContent = s.updated_at || '(not set)';
-    document.getElementById('phase').textContent = s.phase || '(not set)';
+    document.getElementById('pipelineStep').textContent = s.pipeline_step || '(not set)';
     document.getElementById('task').textContent = s.current_task || '(not set)';
-    document.getElementById('lastBacktest').textContent = s.last_backtest ? JSON.stringify(s.last_backtest) : '(none)';
-    document.getElementById('lastOpt').textContent = s.last_optimization ? JSON.stringify(s.last_optimization) : '(none)';
     document.getElementById('notes').textContent = s.notes || '';
+
+    const bt = s.last_backtest || {};
+    document.getElementById('kpiPF').textContent = fmt(bt.profit_factor, 3);
+    document.getElementById('kpiTrades').textContent = fmt(bt.trades, 0);
+    document.getElementById('kpiRet').textContent = fmt(bt.return_pct, 2);
+    document.getElementById('kpiDD').textContent = fmt(bt.max_drawdown_pct, 2);
+
+    const meta = [];
+    if (bt.symbol) meta.push(bt.symbol);
+    if (bt.exchange) meta.push(bt.exchange);
+    if (bt.timeframe) meta.push(bt.timeframe);
+    if (bt.model) meta.push(bt.model);
+    if (bt.asof) meta.push('asof ' + bt.asof);
+    document.getElementById('backtestMeta').textContent = meta.length ? meta.join(' • ') : '';
+
+    const opt = s.last_optimization;
+    if (!opt) {
+      document.getElementById('optSummary').textContent = '(none yet)';
+    } else {
+      const best = opt.best || null;
+      document.getElementById('optSummary').textContent = best
+        ? `Best: PF=${fmt(best.profit_factor,3)} • trades=${fmt(best.trades,0)} • DD%=${fmt(best.max_drawdown_pct,2)} • params=${JSON.stringify(best.params)}`
+        : JSON.stringify(opt);
+    }
+
   } catch (e) {
-    document.getElementById('statusCard').innerHTML = '<b>Failed to load status.json</b><div class="small">' + (e?.message || e) + '</div>';
+    document.querySelector('.wrap').innerHTML = '<div class="card"><b>Failed to load status.json</b><div class="small">' + (e?.message || e) + '</div></div>';
   }
 }
+
 load();
 </script>
 </body>
