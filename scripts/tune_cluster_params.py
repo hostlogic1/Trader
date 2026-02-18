@@ -77,24 +77,32 @@ def main():
 
     keys = list(grid.keys())
     best: Result | None = None
-    results: list[dict] = []
+    # Avoid storing the full results list (RAM). We'll stream results to JSONL.
+    results_path = Path(args.out).with_suffix('.jsonl')
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    f_jsonl = results_path.open('w', encoding='utf-8')
+    n = 0
 
     for values in itertools.product(*[grid[k] for k in keys]):
         params = dict(zip(keys, values))
         r = run_once(df, params, args.commission)
-        results.append({
+        rec = {
             **params,
             "profit_factor": r.profit_factor,
             "trades": r.trades,
             "max_drawdown_pct": r.max_dd,
             "return_pct": r.ret,
-        })
+        }
+        f_jsonl.write(json.dumps(rec) + "\n")
+        n += 1
 
         if r.trades < args.min_trades or r.profit_factor is None:
             continue
 
         if best is None or (r.profit_factor > (best.profit_factor or -1)):
             best = r
+
+    f_jsonl.close()
 
     out = {
         "best": None if best is None else {
@@ -105,7 +113,8 @@ def main():
             "return_pct": best.ret,
         },
         "grid": grid,
-        "results": results,
+        "results_jsonl": str(results_path),
+        "evaluations": n,
     }
 
     out_path = Path(args.out)
