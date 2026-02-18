@@ -1,16 +1,16 @@
 {
-  "current_task": "Baseline A/B complete (no trades yet)",
+  "current_task": "Idle (last cycle complete)",
   "last_backtest": {
-    "asof": "2026-02-18T14:56:04+00:00",
+    "asof": "2026-02-18T17:01:32+00:00",
+    "commission": 0.001,
     "exchange": "coinbase",
-    "note": "Profit factor is null because the current baseline produced 0 trades under default filters. Next step: align entry logic closer to notebook + your stoch cluster/sequence rules.",
     "pf_1m": null,
     "pf_5m": null,
     "symbol": "SOL/USDC",
     "winner": "5m"
   },
   "last_optimization": null,
-  "notes": "Profit factor is null because the current baseline produced 0 trades under default filters. Next step: align entry logic closer to notebook + your stoch cluster/sequence rules.",
+  "notes": "Baseline A/B rerun complete. Next: add key-level + market-structure gating, then regime strategies and selector.",
   "phase": "research",
-  "updated_at": "2026-02-18T14:56:04+00:00"
+  "updated_at": "2026-02-18T17:01:32+00:00"
 }
