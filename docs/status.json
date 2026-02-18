@@ -1,5 +1,5 @@
 {
-  "current_task": "Revised entry logic (cluster+sequence) backtest complete",
+  "current_task": "Fetching 5m OHLCV (coinbase SOL/USDC)",
   "last_backtest": {
     "asof": "2026-02-18T17:51:41+00:00",
     "exchange": "coinbase",
@@ -12,7 +12,7 @@
     "trades": 5
   },
   "last_optimization": null,
-  "notes": "We now get trades. Next: tune cluster_spread/consolidation/extreme_level and add frequency guardrail toward 5\u201310 trades/day, then add key-level + market-structure gates and regime selector.",
+  "notes": "Refreshing 5m candles since 2025-08-22. Next: baseline backtest.",
   "phase": "research",
-  "updated_at": "2026-02-18T17:51:41+00:00"
+  "updated_at": "2026-02-18T18:00:13+00:00"
 }
