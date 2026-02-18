@@ -1,16 +1,18 @@
 {
-  "current_task": "Idle (last cycle complete)",
+  "current_task": "Revised entry logic (cluster+sequence) backtest complete",
   "last_backtest": {
-    "asof": "2026-02-18T17:01:32+00:00",
-    "commission": 0.001,
+    "asof": "2026-02-18T17:51:41+00:00",
     "exchange": "coinbase",
-    "pf_1m": null,
-    "pf_5m": null,
+    "max_drawdown_pct": -3.4133453359878163,
+    "model": "cluster+sequence (looser baseline)",
+    "profit_factor": 0.42354464885709,
+    "return_pct": -2.4396385617632586,
     "symbol": "SOL/USDC",
-    "winner": "5m"
+    "timeframe": "5m",
+    "trades": 5
   },
   "last_optimization": null,
-  "notes": "Baseline A/B rerun complete. Next: add key-level + market-structure gating, then regime strategies and selector.",
+  "notes": "We now get trades. Next: tune cluster_spread/consolidation/extreme_level and add frequency guardrail toward 5\u201310 trades/day, then add key-level + market-structure gates and regime selector.",
   "phase": "research",
-  "updated_at": "2026-02-18T17:01:32+00:00"
+  "updated_at": "2026-02-18T17:51:41+00:00"
 }
