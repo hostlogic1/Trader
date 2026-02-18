@@ -34,35 +34,25 @@ def main():
 
     sh(["python3", "scripts/update_status.py", "--phase", "research", "--task", f"Cycle: fetch OHLCV + baseline A/B ({exchange} {symbol})", "--notes", "Refreshing candles and re-running baseline A/B (1m vs 5m). Winner = higher profit factor."])
 
-    sh(["python3", "scripts/fetch_ohlcv.py", "--exchange", exchange, "--symbol", symbol, "--timeframe", "1m", "--since", since, "--limit", "1000"])
+    # For now: prioritize 5m (more reliable history). We’ll re-add 1m A/B later.
     sh(["python3", "scripts/fetch_ohlcv.py", "--exchange", exchange, "--symbol", symbol, "--timeframe", "5m", "--since", since, "--limit", "1000"])
 
-    csv_1m = f"data/{exchange}_{symbol.replace('/', '-')}_1m.csv"
     csv_5m = f"data/{exchange}_{symbol.replace('/', '-')}_5m.csv"
 
-    # Run A/B and write report (reports/ is local ignored, but we’ll also push a tiny summary to docs/status.json)
-    out_json = "reports/ab_result.json"
-    sh(["python3", "scripts/run_baseline_ab.py", "--csv-1m", csv_1m, "--csv-5m", csv_5m, "--commission", str(commission), "--out", out_json])
+    # Run baseline backtest on 5m and push a summary to docs/status.json
+    out_json = "reports/baseline_5m.json"
+    sh(["python3", "scripts/run_baseline_ab.py", "--csv-1m", csv_5m, "--csv-5m", csv_5m, "--commission", str(commission), "--out", out_json])
 
     result = json.loads((REPO / out_json).read_text())
-
-    def _clean(x):
-        try:
-            import math
-            if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
-                return None
-        except Exception:
-            pass
-        return x
 
     summary = {
         "asof": utc_now_iso(),
         "exchange": exchange,
         "symbol": symbol,
         "commission": commission,
-        "winner": result.get("winner"),
-        "pf_1m": _clean(result.get("1m", {}).get("profit_factor")),
-        "pf_5m": _clean(result.get("5m", {}).get("profit_factor")),
+        "timeframe": "5m",
+        "profit_factor": result.get("5m", {}).get("profit_factor"),
+        "note": "5m-only cycle (1m disabled until data coverage is fixed and trades are firing)."
     }
 
     # Update status.json with last_backtest summary
