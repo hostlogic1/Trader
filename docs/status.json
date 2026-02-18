@@ -1,0 +1,8 @@
+{
+  "updated_at": "",
+  "phase": "setup",
+  "current_task": "",
+  "last_backtest": null,
+  "last_optimization": null,
+  "notes": "Status page scaffold created. Next: wire this to backtest pipeline to update automatically."
+}

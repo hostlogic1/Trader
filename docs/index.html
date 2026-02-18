@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trader — Research Status</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#0b0f14; color:#e8eef5; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    .sub { color:#a9b6c5; margin: 0 0 18px; }
+    .card { background:#111826; border:1px solid #223046; border-radius: 12px; padding: 16px; margin: 12px 0; }
+    .k { color:#9fb1c5; width: 180px; display:inline-block; }
+    .v { color:#e8eef5; }
+    code { background:#0a1220; padding:2px 6px; border-radius: 6px; }
+    .small { color:#a9b6c5; font-size: 13px; }
+    a { color:#7ab7ff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Trader — Research / Backtest Status</h1>
+    <p class="sub">This page is safe to share. It only shows high-level progress and summary numbers.</p>
+
+    <div class="card" id="statusCard">
+      <div><span class="k">Updated</span> <span class="v" id="updatedAt">(loading)</span></div>
+      <div><span class="k">Phase</span> <span class="v" id="phase">(loading)</span></div>
+      <div><span class="k">Current task</span> <span class="v" id="task">(loading)</span></div>
+      <div><span class="k">Last backtest</span> <span class="v" id="lastBacktest">(loading)</span></div>
+      <div><span class="k">Last optimization</span> <span class="v" id="lastOpt">(loading)</span></div>
+      <div style="margin-top:10px" class="small" id="notes"></div>
+    </div>
+
+    <div class="card">
+      <div class="small">Data source for this page: <code>docs/status.json</code></div>
+      <div class="small">If this looks stale, it means the pipeline hasn’t updated the status file yet.</div>
+    </div>
+
+    <div class="card">
+      <div class="small">Repo: <a href="https://github.com/hostlogic1/Trader">github.com/hostlogic1/Trader</a></div>
+    </div>
+  </div>
+
+<script>
+async function load() {
+  try {
+    const res = await fetch('./status.json', { cache: 'no-store' });
+    const s = await res.json();
+    document.getElementById('updatedAt').textContent = s.updated_at || '(not set)';
+    document.getElementById('phase').textContent = s.phase || '(not set)';
+    document.getElementById('task').textContent = s.current_task || '(not set)';
+    document.getElementById('lastBacktest').textContent = s.last_backtest ? JSON.stringify(s.last_backtest) : '(none)';
+    document.getElementById('lastOpt').textContent = s.last_optimization ? JSON.stringify(s.last_optimization) : '(none)';
+    document.getElementById('notes').textContent = s.notes || '';
+  } catch (e) {
+    document.getElementById('statusCard').innerHTML = '<b>Failed to load status.json</b><div class="small">' + (e?.message || e) + '</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>
