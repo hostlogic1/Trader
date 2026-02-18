@@ -12,15 +12,15 @@
     "trades": 5
   },
   "last_optimization": null,
-  "next_run_et": "2026-02-18T18:00:00-05:00",
+  "next_run_et": "2026-02-18T17:00:00-05:00",
   "notes": "Refreshing 5m candles since 2025-08-22. Next: baseline backtest.",
   "phase": "research",
   "pipeline_step": "backtest_5m",
   "schedule": {
-    "expr": "0 */6 * * *",
+    "expr": "0 * * * *",
     "kind": "cron",
-    "summary": "Every 6 hours, on the hour (ET)",
+    "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-18T21:48:27+00:00"
+  "updated_at": "2026-02-18T21:50:58+00:00"
 }
