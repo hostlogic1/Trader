@@ -1,7 +1,7 @@
 {
   "current_task": "Running 5m baseline backtest (cluster+sequence)",
   "last_backtest": {
-    "asof": "2026-02-18T17:51:41+00:00",
+    "asof": "2026-02-18T22:00:14+00:00",
     "exchange": "coinbase",
     "max_drawdown_pct": -3.4133453359878163,
     "model": "cluster+sequence (looser baseline)",
@@ -15,12 +15,12 @@
   "next_run_et": "2026-02-18T17:00:00-05:00",
   "notes": "Goal: get stable trade generation; next step is parameter tuning for trade frequency + profit factor.",
   "phase": "research",
-  "pipeline_step": "backtest_5m",
+  "pipeline_step": "tune_params",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-18T22:00:03+00:00"
+  "updated_at": "2026-02-18T22:00:14+00:00"
 }
