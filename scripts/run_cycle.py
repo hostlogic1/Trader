@@ -112,10 +112,32 @@ def main():
         status["pipeline_step"] = "backtest_5m"
 
     elif step == "expand_universe":
-        # Placeholder stage: next implementation is multi-symbol candle fetch + aggregated backtest
         status["phase"] = "research"
-        status["current_task"] = "Next: expand symbol universe (basket)"
-        status["notes"] = "Tuning showed cluster+sequence is too selective on SOL/USDC alone. Next we’ll add a symbol basket + additional entry modes to reach >=200 trades without loosening into noise."
+        status["current_task"] = "Expanding universe: fetch + basket backtest (5m)"
+        status["notes"] = "Fetching 5m candles for a small basket (SOL, BTC, ETH, BNB) and running per-symbol backtests; goal is to reach >=200 trades without loosening into noise."
+        status["updated_at"] = utc_now_iso()
+        _save_status(status)
+        _commit_push(f"Status: {status['current_task']}")
+
+        basket = os.environ.get("TRADER_SYMBOLS", "SOL/USDC,BTC/USDC,ETH/USDC")
+        symbols = [s.strip() for s in basket.split(",") if s.strip()]
+        # Fetch each symbol (5m)
+        for sym in symbols:
+            sh(["python3", "scripts/fetch_ohlcv.py", "--exchange", exchange, "--symbol", sym, "--timeframe", "5m", "--since", since, "--limit", "1000"])
+
+        out_json = "reports/basket_backtest.json"
+        sh(["python3", "scripts/run_basket_backtest.py", "--exchange", exchange, "--symbols", basket, "--timeframe", "5m", "--commission", str(commission), "--out", out_json])
+        basket_res = json.loads((REPO / out_json).read_text())
+
+        status["last_backtest"] = {
+            "asof": utc_now_iso(),
+            "exchange": exchange,
+            "timeframe": "5m",
+            "model": "cluster+sequence (looser baseline)",
+            "total_trades": basket_res.get("total_trades"),
+            "symbols": basket_res.get("symbols"),
+        }
+        status["notes"] = f"Basket backtest complete. Total trades={status['last_backtest']['total_trades']}. Next: iterate entry modes + regime gating."
         status["pipeline_step"] = "fetch_5m"
 
     else:

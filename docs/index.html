@@ -174,12 +174,15 @@ async function load() {
 
     const bt = s.last_backtest || {};
     document.getElementById('kpiPF').textContent = fmt(bt.profit_factor, 3);
-    document.getElementById('kpiTrades').textContent = fmt(bt.trades, 0);
+    // support basket totals
+    const tradesVal = (bt.total_trades !== undefined) ? bt.total_trades : bt.trades;
+    document.getElementById('kpiTrades').textContent = fmt(tradesVal, 0);
     document.getElementById('kpiRet').textContent = fmt(bt.return_pct, 2);
     document.getElementById('kpiDD').textContent = fmt(bt.max_drawdown_pct, 2);
 
     const meta = [];
     if (bt.symbol) meta.push(bt.symbol);
+    if (bt.symbols) meta.push(`symbols=${bt.symbols.length}`);
     if (bt.exchange) meta.push(bt.exchange);
     if (bt.timeframe) meta.push(bt.timeframe);
     if (bt.model) meta.push(bt.model);
