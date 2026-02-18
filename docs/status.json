@@ -1,5 +1,5 @@
 {
-  "current_task": "Tuning cluster/sequence params (light grid)",
+  "current_task": "tune_params failed (SIGKILL \u2014 likely OOM)",
   "last_backtest": {
     "asof": "2026-02-18T22:00:14+00:00",
     "exchange": "coinbase",
@@ -13,8 +13,8 @@
   },
   "last_optimization": null,
   "next_run_et": "2026-02-18T17:00:00-05:00",
-  "notes": "Searching for higher profit factor while increasing trade count. Next: apply best params + rerun backtest.",
-  "phase": "tuning",
+  "notes": "Grid search killed by OS. Need to reduce grid size or memory usage in tune_cluster_params.py.",
+  "phase": "error",
   "pipeline_step": "tune_params",
   "schedule": {
     "expr": "0 * * * *",
@@ -22,5 +22,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-18T23:00:03+00:00"
+  "updated_at": "2026-02-18T23:02:09+00:00"
 }
