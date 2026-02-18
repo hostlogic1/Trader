@@ -88,9 +88,11 @@
         <div class="row">
           <div class="small"><span class="mono">Updated:</span> <span id="updatedAt">(loading)</span></div>
           <div class="small"><span class="mono">Pipeline step:</span> <span id="pipelineStep">(loading)</span></div>
+          <div class="small"><span class="mono">Next run (ET):</span> <span id="nextRun">(loading)</span></div>
         </div>
         <div style="margin-top:10px; font-size:16px; font-weight:650;" id="task">(loading)</div>
         <div class="small" style="margin-top:8px;" id="notes"></div>
+        <div class="small" style="margin-top:8px;" id="schedule"></div>
       </div>
 
       <div class="card col-12">
@@ -167,6 +169,8 @@ async function load() {
     document.getElementById('pipelineStep').textContent = s.pipeline_step || '(not set)';
     document.getElementById('task').textContent = s.current_task || '(not set)';
     document.getElementById('notes').textContent = s.notes || '';
+    document.getElementById('nextRun').textContent = s.next_run_et || '—';
+    document.getElementById('schedule').textContent = s.schedule ? (`Schedule: ${s.schedule.summary} (${s.schedule.expr} ${s.schedule.tz})`) : '';
 
     const bt = s.last_backtest || {};
     document.getElementById('kpiPF').textContent = fmt(bt.profit_factor, 3);
