@@ -39,9 +39,9 @@ def main():
 
     csv_5m = f"data/{exchange}_{symbol.replace('/', '-')}_5m.csv"
 
-    # Run baseline backtest on 5m and push a summary to docs/status.json
-    out_json = "reports/baseline_5m.json"
-    sh(["python3", "scripts/run_baseline_ab.py", "--csv-1m", csv_5m, "--csv-5m", csv_5m, "--commission", str(commission), "--out", out_json])
+    # Run baseline backtest on 5m (cluster+sequence variant for now)
+    out_json = "reports/baseline_5m_cluster.json"
+    sh(["python3", "scripts/run_baseline_5m_cluster.py", "--csv", csv_5m, "--commission", str(commission), "--out", out_json])
 
     result = json.loads((REPO / out_json).read_text())
 
@@ -51,8 +51,12 @@ def main():
         "symbol": symbol,
         "commission": commission,
         "timeframe": "5m",
-        "profit_factor": result.get("5m", {}).get("profit_factor"),
-        "note": "5m-only cycle (1m disabled until data coverage is fixed and trades are firing)."
+        "model": "cluster+sequence (looser baseline)",
+        "trades": result.get("trades"),
+        "profit_factor": result.get("profit_factor"),
+        "return_pct": result.get("stats", {}).get("Return [%]"),
+        "max_drawdown_pct": result.get("stats", {}).get("Max. Drawdown [%]"),
+        "note": "5m-only cycle. Next: tune params to target 5–10 trades/day, then add key levels + structure gates + regime selector."
     }
 
     # Update status.json with last_backtest summary
