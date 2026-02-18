@@ -59,7 +59,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--csv", required=True)
     ap.add_argument("--commission", type=float, default=0.001)
-    ap.add_argument("--min-trades", type=int, default=50, help="guardrail: ignore configs with fewer trades")
+    ap.add_argument("--min-trades", type=int, default=200, help="guardrail: ignore configs with fewer trades")
     ap.add_argument("--out", default="reports/tuning_cluster.json")
     args = ap.parse_args()
 

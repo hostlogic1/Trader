@@ -102,7 +102,7 @@ def main():
 
         csv_5m = f"data/{exchange}_{symbol.replace('/', '-')}_5m.csv"
         out_json = "reports/tuning_cluster.json"
-        sh(["python3", "scripts/tune_cluster_params.py", "--csv", csv_5m, "--commission", str(commission), "--min-trades", "50", "--out", out_json])
+        sh(["python3", "scripts/tune_cluster_params.py", "--csv", csv_5m, "--commission", str(commission), "--min-trades", "200", "--out", out_json])
         tuning = json.loads((REPO / out_json).read_text())
         status["last_optimization"] = {
             "asof": utc_now_iso(),
