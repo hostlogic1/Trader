@@ -111,6 +111,13 @@ def main():
         }
         status["pipeline_step"] = "backtest_5m"
 
+    elif step == "expand_universe":
+        # Placeholder stage: next implementation is multi-symbol candle fetch + aggregated backtest
+        status["phase"] = "research"
+        status["current_task"] = "Next: expand symbol universe (basket)"
+        status["notes"] = "Tuning showed cluster+sequence is too selective on SOL/USDC alone. Next we’ll add a symbol basket + additional entry modes to reach >=200 trades without loosening into noise."
+        status["pipeline_step"] = "fetch_5m"
+
     else:
         status["phase"] = "research"
         status["current_task"] = "Idle"
