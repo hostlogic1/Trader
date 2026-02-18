@@ -35,16 +35,19 @@ def fetch_ohlcv(
         since_ms = int(dt.timestamp() * 1000)
 
     rows = []
+    prev_last = None
     while True:
         batch = ex.fetch_ohlcv(symbol, timeframe=timeframe, since=since_ms, limit=limit)
         if not batch:
             break
         rows.extend(batch)
         last = batch[-1][0]
+        if prev_last is not None and last <= prev_last:
+            # Safety against infinite loops if exchange repeats last candle
+            break
+        prev_last = last
         # advance 1ms to avoid duplicates
         since_ms = last + 1
-        if len(batch) < limit:
-            break
 
     df = pd.DataFrame(rows, columns=["Timestamp", "Open", "High", "Low", "Close", "Volume"])
     df["Datetime"] = pd.to_datetime(df["Timestamp"], unit="ms", utc=True)
