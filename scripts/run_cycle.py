@@ -40,8 +40,9 @@ def _commit_push(msg: str) -> None:
 
 def main():
     # Safe, low-API pipeline: one step per run.
-    exchange = os.environ.get("TRADER_EXCHANGE", "coinbase")
-    symbol = os.environ.get("TRADER_SYMBOL", "SOL/USDC")
+    # Data feed for research/backtests (execution can still be Jupiter later)
+    exchange = os.environ.get("TRADER_EXCHANGE", "binance")
+    symbol = os.environ.get("TRADER_SYMBOL", "SOL/USDT")
 
     since_dt = datetime.now(timezone.utc) - timedelta(days=int(os.environ.get("TRADER_LOOKBACK_DAYS", "180")))
     since = since_dt.date().isoformat()
@@ -119,7 +120,7 @@ def main():
         _save_status(status)
         _commit_push(f"Status: {status['current_task']}")
 
-        basket = os.environ.get("TRADER_SYMBOLS", "SOL/USDC,BTC/USDC,ETH/USDC")
+        basket = os.environ.get("TRADER_SYMBOLS", "SOL/USDT,BTC/USDT,ETH/USDT,BNB/USDT")
         symbols = [s.strip() for s in basket.split(",") if s.strip()]
         # Fetch each symbol (5m)
         for sym in symbols:
