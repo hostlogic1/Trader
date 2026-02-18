@@ -24,7 +24,7 @@ def main():
     symbol = os.environ.get("TRADER_SYMBOL", "SOL/USDC")
 
     # Rolling lookback for refresh (candles are stored locally, not committed)
-    since_dt = datetime.now(timezone.utc) - timedelta(days=int(os.environ.get("TRADER_LOOKBACK_DAYS", "60")))
+    since_dt = datetime.now(timezone.utc) - timedelta(days=int(os.environ.get("TRADER_LOOKBACK_DAYS", "180")))
     since = since_dt.date().isoformat()
 
     commission = float(os.environ.get("TRADER_COMMISSION", "0.001"))
