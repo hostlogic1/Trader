@@ -1,0 +1,13 @@
+# data artifacts
+/data/
+/reports/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+
+# local env
+.env

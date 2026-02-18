@@ -1,0 +1,11 @@
+pandas>=2.0
+numpy>=1.24
+matplotlib
+seaborn
+ccxt
+backtesting
+pandas-ta
+TA-Lib
+scikit-learn
+scikit-optimize
+pyyaml

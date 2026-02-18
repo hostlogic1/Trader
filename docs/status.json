@@ -1,8 +1,8 @@
 {
-  "current_task": "Installing deps + fetching SOL/USDC OHLCV (coinbase)",
+  "updated_at": "",
+  "phase": "setup",
+  "current_task": "",
   "last_backtest": null,
   "last_optimization": null,
-  "notes": "Starting baseline A/B backtest (1m vs 5m) using profit factor.",
-  "phase": "research",
-  "updated_at": "2026-02-18T14:51:25+00:00"
+  "notes": "Status page scaffold created. Next: wire this to backtest pipeline to update automatically."
 }
