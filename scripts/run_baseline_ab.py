@@ -4,8 +4,14 @@ import argparse
 import json
 from pathlib import Path
 
+import sys
+from pathlib import Path as _Path
+
 import pandas as pd
 from backtesting import Backtest
+
+# allow running as a script without installing as a package
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 
 from traderlib.indicators import calculate_indicators
 from traderlib.signals import detect_multi_stoch_breakout
@@ -51,9 +57,47 @@ def main():
 
     winner = "1m" if (pf1 > pf5) else "5m"
 
+    def _jsonify(x):
+        # backtesting.py stats can contain numpy / pandas / timedeltas
+        try:
+            import numpy as np
+            import pandas as pd
+
+            if isinstance(x, (np.generic,)):
+                return x.item()
+            if isinstance(x, (pd.Timedelta,)):
+                return str(x)
+            if isinstance(x, (pd.Timestamp,)):
+                return x.isoformat()
+        except Exception:
+            pass
+        if hasattr(x, "item"):
+            try:
+                return x.item()
+            except Exception:
+                pass
+        return x
+
+    def _clean_stats(d: dict) -> dict:
+        # Drop non-serializable heavy objects
+        d = dict(d)
+        d.pop("_equity_curve", None)
+        d.pop("_trades", None)
+        d.pop("_strategy", None)
+        return {k: _jsonify(v) for k, v in d.items()}
+
+    def _clean_number(x):
+        try:
+            import math
+            if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+                return None
+        except Exception:
+            pass
+        return x
+
     out = {
-        "1m": {"profit_factor": pf1, "stats": s1.to_dict()},
-        "5m": {"profit_factor": pf5, "stats": s5.to_dict()},
+        "1m": {"profit_factor": _clean_number(pf1), "stats": _clean_stats(s1.to_dict())},
+        "5m": {"profit_factor": _clean_number(pf5), "stats": _clean_stats(s5.to_dict())},
         "winner": winner,
     }
 

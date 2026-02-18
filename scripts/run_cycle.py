@@ -46,14 +46,23 @@ def main():
 
     result = json.loads((REPO / out_json).read_text())
 
+    def _clean(x):
+        try:
+            import math
+            if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+                return None
+        except Exception:
+            pass
+        return x
+
     summary = {
         "asof": utc_now_iso(),
         "exchange": exchange,
         "symbol": symbol,
         "commission": commission,
         "winner": result.get("winner"),
-        "pf_1m": result.get("1m", {}).get("profit_factor"),
-        "pf_5m": result.get("5m", {}).get("profit_factor"),
+        "pf_1m": _clean(result.get("1m", {}).get("profit_factor")),
+        "pf_5m": _clean(result.get("5m", {}).get("profit_factor")),
     }
 
     # Update status.json with last_backtest summary
