@@ -14,5 +14,6 @@
   "last_optimization": null,
   "notes": "Refreshing 5m candles since 2025-08-22. Next: baseline backtest.",
   "phase": "research",
-  "updated_at": "2026-02-18T18:00:13+00:00"
+  "pipeline_step": "backtest_5m",
+  "updated_at": "2026-02-18T18:00:35+00:00"
 }
