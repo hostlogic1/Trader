@@ -1,15 +1,17 @@
 {
   "current_task": "Expanding universe: fetch + basket backtest (5m)",
   "last_backtest": {
-    "asof": "2026-02-19T02:00:13+00:00",
+    "asof": "2026-02-19T08:00:48+00:00",
     "exchange": "binanceus",
-    "max_drawdown_pct": -6.062708042114229,
     "model": "cluster+sequence (looser baseline)",
-    "profit_factor": 0.852836357897934,
-    "return_pct": -1.2659617083724153,
-    "symbol": "SOL/USDT",
+    "symbols": [
+      "SOL/USDT",
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT"
+    ],
     "timeframe": "5m",
-    "trades": 22
+    "total_trades": 119
   },
   "last_optimization": {
     "asof": "2026-02-18T23:06:23+00:00",
@@ -34,14 +36,14 @@
     "regime_filter": "2400-bar SMA reduces drawdown but does not fix low PF"
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Option 2: fetching 5m candles for SOL/BTC/ETH/BNB and running a basket backtest to boost sample size safely.",
+  "notes": "Basket backtest complete. Total trades=119. Next: regime audit.",
   "phase": "research",
-  "pipeline_step": "expand_universe",
+  "pipeline_step": "regime_audit",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T08:00:15+00:00"
+  "updated_at": "2026-02-19T08:00:48+00:00"
 }
