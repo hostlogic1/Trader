@@ -1,5 +1,5 @@
 {
-  "current_task": "Market structure audit (15m key levels + HH/HL counts)",
+  "current_task": "Expanding universe: fetch + basket backtest (5m)",
   "last_backtest": {
     "asof": "2026-02-19T02:00:13+00:00",
     "exchange": "binanceus",
@@ -34,7 +34,7 @@
     "regime_filter": "2400-bar SMA reduces drawdown but does not fix low PF"
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Option 1: auditing 15m/1h pivots from 5m data as a precursor to causal key-level zones + BOS reversal logic.",
+  "notes": "Option 2: fetching 5m candles for SOL/BTC/ETH/BNB and running a basket backtest to boost sample size safely.",
   "phase": "research",
   "pipeline_step": "expand_universe",
   "schedule": {
@@ -43,5 +43,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T08:00:11+00:00"
+  "updated_at": "2026-02-19T08:00:15+00:00"
 }
