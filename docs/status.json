@@ -35,12 +35,12 @@
   "next_run_et": "2026-02-19T03:00:00-05:00",
   "notes": "Option 3: auditing TRENDING/RANGING/VOLATILE distribution (heuristic). Next: summarize + set plan for hourly cycle.",
   "phase": "research",
-  "pipeline_step": "regime_audit",
+  "pipeline_step": "summarize",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T15:00:04+00:00"
+  "updated_at": "2026-02-19T15:00:06+00:00"
 }
