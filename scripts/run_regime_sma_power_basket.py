@@ -57,8 +57,8 @@ class RegimeSmaPowerLong(Strategy):
     sma_fast = 20
     sma_slow = 50
 
-    # confidence gate
-    min_conf = 0.55
+    # confidence gate (start looser; tighten after we see trade counts)
+    min_conf = 0.40
 
     # ATR exits scaled by confidence
     atr_n = 14
@@ -86,11 +86,12 @@ class RegimeSmaPowerLong(Strategy):
         if i < max(self.sma_slow, self.atr_n) + 5:
             return
 
-        # require regime trending
-        if df["REGIME"].iat[i] != "TRENDING":
-            return
+        # regime gate: prefer TRENDING, but allow UNKNOWN if confidence is high (early iteration)
+        regime = df["REGIME"].iat[i]
         conf = float(df["REGIME_CONF"].iat[i])
         if not math.isfinite(conf) or conf < self.min_conf:
+            return
+        if regime not in ("TRENDING", "UNKNOWN"):
             return
 
         # SMA trend filter
@@ -134,14 +135,16 @@ def backtest_symbol(df5: pd.DataFrame, commission: float, sma_fast: int, sma_slo
     df = attach_regime_to_5m(df5)
     df = add_sma(df, sma_fast, "SMA_FAST")
     df = add_sma(df, sma_slow, "SMA_SLOW")
-    df = add_power_candle_flags(df, lookback=7)
+    # Power candle: start slightly looser; tighten later
+    df = add_power_candle_flags(df, lookback=10, close_near_top=0.35, body_ratio_min=0.50)
     df = df.dropna().copy()
 
     # inject params
     RegimeSmaPowerLong.sma_fast = sma_fast
     RegimeSmaPowerLong.sma_slow = sma_slow
 
-    bt = Backtest(df, RegimeSmaPowerLong, cash=10_000, commission=commission)
+    # Use higher cash because backtesting.py doesn't support fractional sizing by default (BTC would not trade at $10k)
+    bt = Backtest(df, RegimeSmaPowerLong, cash=1_000_000, commission=commission)
     stats = bt.run()
 
     trades = int(len(stats["_trades"]))
