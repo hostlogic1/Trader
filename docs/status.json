@@ -1,5 +1,5 @@
 {
-  "current_task": "Fetching 5m OHLCV (binanceus SOL/USDT)",
+  "current_task": "Running 5m baseline backtest (cluster+sequence)",
   "last_backtest": {
     "asof": "2026-02-19T00:01:24+00:00",
     "exchange": "binanceus",
@@ -22,7 +22,7 @@
     "note": "Cluster+sequence trigger is too selective on SOL/USDC 5m; max ~7 trades across grid. Need more entry modes and/or multi-symbol basket."
   },
   "next_run_et": "2026-02-18T17:00:00-05:00",
-  "notes": "Refreshing 5m candles since 2025-08-23. Next: baseline backtest.",
+  "notes": "Goal: get stable trade generation; next step is parameter tuning for trade frequency + profit factor.",
   "phase": "research",
   "pipeline_step": "backtest_5m",
   "schedule": {
@@ -31,5 +31,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T01:00:14+00:00"
+  "updated_at": "2026-02-19T02:00:03+00:00"
 }
