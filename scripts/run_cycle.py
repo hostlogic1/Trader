@@ -41,7 +41,7 @@ def _commit_push(msg: str) -> None:
 def main():
     # Safe, low-API pipeline: one step per run.
     # Data feed for research/backtests (execution can still be Jupiter later)
-    exchange = os.environ.get("TRADER_EXCHANGE", "binance")
+    exchange = os.environ.get("TRADER_EXCHANGE", "binanceus")
     symbol = os.environ.get("TRADER_SYMBOL", "SOL/USDT")
 
     since_dt = datetime.now(timezone.utc) - timedelta(days=int(os.environ.get("TRADER_LOOKBACK_DAYS", "180")))
