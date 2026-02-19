@@ -19,9 +19,28 @@ from traderlib.ma import add_ema
 
 
 def _clean(x):
-    if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+    if isinstance(x, float) and math.isnan(x):
         return None
     return x
+
+
+def profit_factor_from_trades(trades_df) -> float | None:
+    """Compute profit factor from backtesting.py _trades df.
+
+    PF = gross_profit / abs(gross_loss)
+    If there are no losing trades, PF is treated as a large finite number.
+    If there are no trades, returns None.
+    """
+    if trades_df is None or len(trades_df) == 0:
+        return None
+    pnl = trades_df["PnL"].astype(float)
+    gp = float(pnl[pnl > 0].sum())
+    gl = float(pnl[pnl < 0].sum())
+    if gp <= 0 and gl >= 0:
+        return 0.0
+    if gl == 0:
+        return 99.0  # cap instead of inf
+    return gp / abs(gl)
 
 
 def load_csv(path: Path) -> pd.DataFrame:
@@ -168,8 +187,9 @@ def main():
 
             bt = Backtest(df, EmaPowerLS, cash=1_000_000, commission=args.commission)
             st = bt.run()
-            trades = int(len(st["_trades"]))
-            pf = _clean(float(st.get("Profit Factor", float("nan"))))
+            trades_df = st["_trades"]
+            trades = int(len(trades_df))
+            pf = profit_factor_from_trades(trades_df)
             sh = _clean(float(st.get("Sharpe Ratio", float("nan"))))
             dd = _clean(float(st.get("Max. Drawdown [%]", float("nan"))))
 
@@ -201,6 +221,7 @@ def main():
         "grid": {"fast": fasts, "slow": slows},
         "min_trades": args.min_trades,
         "top": candidates[:10],
+        "all": results,
         "note": "Coarse EMA search for TRENDING/UNKNOWN regime with power candles. Next: fine search around winners + add RANGING module at 15m key levels.",
     }
 
