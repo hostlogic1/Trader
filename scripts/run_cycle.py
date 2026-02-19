@@ -93,6 +93,18 @@ def main():
         }
         status["pipeline_step"] = "tune_params"
 
+    elif step == "market_structure":
+        status["phase"] = "research"
+        status["current_task"] = "Market structure audit (15m key levels + HH/HL counts)"
+        status["notes"] = "Option 1: auditing 15m/1h pivots from 5m data as a precursor to causal key-level zones + BOS reversal logic."
+        status["updated_at"] = utc_now_iso()
+        _save_status(status)
+        _commit_push(f"Status: {status['current_task']}")
+
+        csv_5m = f"data/{exchange}_{symbol.replace('/', '-')}_5m.csv"
+        sh(["python3", "scripts/structure_audit.py", "--csv", csv_5m])
+        status["pipeline_step"] = "expand_universe"
+
     elif step == "tune_params":
         status["phase"] = "tuning"
         status["current_task"] = "Tuning cluster/sequence params (light grid)"
@@ -109,20 +121,21 @@ def main():
             "asof": utc_now_iso(),
             "kind": "grid",
             "best": tuning.get("best"),
+            "evaluations": tuning.get("evaluations"),
+            "note": "If best is null, we need additional entry modes and/or basket expansion (not just parameter tweaks)."
         }
-        status["pipeline_step"] = "backtest_5m"
+        status["pipeline_step"] = "regime_audit"
 
     elif step == "expand_universe":
         status["phase"] = "research"
         status["current_task"] = "Expanding universe: fetch + basket backtest (5m)"
-        status["notes"] = "Fetching 5m candles for a small basket (SOL, BTC, ETH, BNB) and running per-symbol backtests; goal is to reach >=200 trades without loosening into noise."
+        status["notes"] = "Option 2: fetching 5m candles for SOL/BTC/ETH/BNB and running a basket backtest to boost sample size safely."
         status["updated_at"] = utc_now_iso()
         _save_status(status)
         _commit_push(f"Status: {status['current_task']}")
 
         basket = os.environ.get("TRADER_SYMBOLS", "SOL/USDT,BTC/USDT,ETH/USDT,BNB/USDT")
         symbols = [s.strip() for s in basket.split(",") if s.strip()]
-        # Fetch each symbol (5m)
         for sym in symbols:
             sh(["python3", "scripts/fetch_ohlcv.py", "--exchange", exchange, "--symbol", sym, "--timeframe", "5m", "--since", since, "--limit", "1000"])
 
@@ -138,7 +151,30 @@ def main():
             "total_trades": basket_res.get("total_trades"),
             "symbols": basket_res.get("symbols"),
         }
-        status["notes"] = f"Basket backtest complete. Total trades={status['last_backtest']['total_trades']}. Next: iterate entry modes + regime gating."
+        status["notes"] = f"Basket backtest complete. Total trades={status['last_backtest']['total_trades']}. Next: regime audit."
+        status["pipeline_step"] = "regime_audit"
+
+    elif step == "regime_audit":
+        status["phase"] = "research"
+        status["current_task"] = "Regime audit (ER + ATR% heuristic)"
+        status["notes"] = "Option 3: auditing TRENDING/RANGING/VOLATILE distribution (heuristic). Next: summarize + set plan for hourly cycle."
+        status["updated_at"] = utc_now_iso()
+        _save_status(status)
+        _commit_push(f"Status: {status['current_task']}")
+
+        csv_5m = f"data/{exchange}_{symbol.replace('/', '-')}_5m.csv"
+        sh(["python3", "scripts/regime_audit.py", "--csv", csv_5m])
+        status["pipeline_step"] = "summarize"
+
+    elif step == "summarize":
+        status["phase"] = "research"
+        status["current_task"] = "Summary + next plan"
+        status["notes"] = "Summarizing the last 3 runs (structure audit → basket → regime) and returning to normal hourly cycle." 
+        status["updated_at"] = utc_now_iso()
+        _save_status(status)
+        _commit_push(f"Status: {status['current_task']}")
+
+        sh(["python3", "scripts/summarize_findings.py"])
         status["pipeline_step"] = "fetch_5m"
 
     else:
