@@ -35,12 +35,12 @@
   "next_run_et": "2026-02-19T03:00:00-05:00",
   "notes": "Summarizing the last 3 runs (structure audit \u2192 basket \u2192 regime) and returning to normal hourly cycle.",
   "phase": "research",
-  "pipeline_step": "summarize",
+  "pipeline_step": "fetch_5m",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T12:00:13+00:00"
+  "updated_at": "2026-02-19T12:00:14+00:00"
 }
