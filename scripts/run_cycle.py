@@ -49,8 +49,8 @@ def main():
 
     commission = float(os.environ.get("TRADER_COMMISSION", "0.001"))
 
-    # Ensure git uses the deploy-key ssh config
-    os.environ.setdefault("GIT_SSH_COMMAND", "ssh -F /data/.openclaw/workspace/.ssh/config")
+    # Ensure git uses the deploy-key ssh config (set explicitly for cron environments)
+    os.environ["GIT_SSH_COMMAND"] = "ssh -F /data/.openclaw/workspace/.ssh/config"
 
     status = _load_status()
     step = status.get("pipeline_step") or "fetch_5m"
