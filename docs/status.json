@@ -1,15 +1,17 @@
 {
   "current_task": "Expanding universe: fetch + basket backtest (5m)",
   "last_backtest": {
-    "asof": "2026-02-18T22:00:14+00:00",
-    "exchange": "coinbase",
-    "max_drawdown_pct": -3.4133453359878163,
+    "asof": "2026-02-19T00:01:24+00:00",
+    "exchange": "binanceus",
     "model": "cluster+sequence (looser baseline)",
-    "profit_factor": 0.42354464885709,
-    "return_pct": -2.4396385617632586,
-    "symbol": "SOL/USDC",
+    "symbols": [
+      "SOL/USDT",
+      "BTC/USDT",
+      "ETH/USDT",
+      "BNB/USDT"
+    ],
     "timeframe": "5m",
-    "trades": 5
+    "total_trades": 119
   },
   "last_optimization": {
     "asof": "2026-02-18T23:06:23+00:00",
@@ -20,14 +22,14 @@
     "note": "Cluster+sequence trigger is too selective on SOL/USDC 5m; max ~7 trades across grid. Need more entry modes and/or multi-symbol basket."
   },
   "next_run_et": "2026-02-18T17:00:00-05:00",
-  "notes": "Fetching 5m candles for a small basket (SOL, BTC, ETH, BNB) and running per-symbol backtests; goal is to reach >=200 trades without loosening into noise.",
+  "notes": "Basket backtest complete. Total trades=119. Next: iterate entry modes + regime gating.",
   "phase": "research",
-  "pipeline_step": "expand_universe",
+  "pipeline_step": "fetch_5m",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T00:00:50+00:00"
+  "updated_at": "2026-02-19T00:01:24+00:00"
 }
