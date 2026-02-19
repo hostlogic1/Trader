@@ -7,3 +7,9 @@ def add_sma(df: pd.DataFrame, length: int, col: str) -> pd.DataFrame:
     out = df.copy()
     out[col] = out["Close"].rolling(length, min_periods=length).mean()
     return out
+
+
+def add_ema(df: pd.DataFrame, length: int, col: str) -> pd.DataFrame:
+    out = df.copy()
+    out[col] = out["Close"].ewm(span=length, adjust=False, min_periods=length).mean()
+    return out

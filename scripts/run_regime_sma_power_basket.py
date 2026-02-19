@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from traderlib.regime_heuristic import compute_regime
 from traderlib.power_candle import add_power_candle_flags
-from traderlib.ma import add_sma
+from traderlib.ma import add_ema
 
 
 def _clean(x):
@@ -53,9 +53,9 @@ def attach_regime_to_5m(df5: pd.DataFrame) -> pd.DataFrame:
     return df5x
 
 
-class RegimeSmaPowerLong(Strategy):
-    sma_fast = 20
-    sma_slow = 50
+class RegimeEmaPowerLongShort(Strategy):
+    ema_fast = 20
+    ema_slow = 50
 
     # confidence gate (start looser; tighten after we see trade counts)
     min_conf = 0.40
@@ -83,7 +83,7 @@ class RegimeSmaPowerLong(Strategy):
     def next(self):
         df = self.data.df
         i = len(df) - 1
-        if i < max(self.sma_slow, self.atr_n) + 5:
+        if i < max(self.ema_slow, self.atr_n) + 5:
             return
 
         # regime gate: prefer TRENDING, but allow UNKNOWN if confidence is high (early iteration)
@@ -94,16 +94,16 @@ class RegimeSmaPowerLong(Strategy):
         if regime not in ("TRENDING", "UNKNOWN"):
             return
 
-        # SMA trend filter
-        fast = float(df["SMA_FAST"].iat[i])
-        slow = float(df["SMA_SLOW"].iat[i])
+        # EMA trend filter
+        fast = float(df["EMA_FAST"].iat[i])
+        slow = float(df["EMA_SLOW"].iat[i])
         close = float(df["Close"].iat[i])
-        if not (close > slow and fast > slow):
-            return
 
-        # Power candle trigger
-        if not bool(df["BullPower"].iat[i]):
-            return
+        bull_trend = (close > slow) and (fast > slow)
+        bear_trend = (close < slow) and (fast < slow)
+
+        bull_power = bool(df["BullPower"].iat[i])
+        bear_power = bool(df["BearPower"].iat[i])
 
         if self.position:
             return
@@ -116,9 +116,18 @@ class RegimeSmaPowerLong(Strategy):
         tp_atr = self.base_tp_atr * (1.0 + self.tp_conf_mult * conf)
 
         entry = close
-        sl = entry - sl_atr * atr
-        tp = entry + tp_atr * atr
-        self.buy(sl=sl, tp=tp)
+
+        if bull_trend and bull_power:
+            sl = entry - sl_atr * atr
+            tp = entry + tp_atr * atr
+            self.buy(sl=sl, tp=tp)
+            return
+
+        if bear_trend and bear_power:
+            sl = entry + sl_atr * atr
+            tp = entry - tp_atr * atr
+            self.sell(sl=sl, tp=tp)
+            return
 
 
 @dataclass
@@ -131,20 +140,20 @@ class SymResult:
     ret: float | None
 
 
-def backtest_symbol(df5: pd.DataFrame, commission: float, sma_fast: int, sma_slow: int) -> SymResult:
+def backtest_symbol(df5: pd.DataFrame, commission: float, ema_fast: int, ema_slow: int) -> SymResult:
     df = attach_regime_to_5m(df5)
-    df = add_sma(df, sma_fast, "SMA_FAST")
-    df = add_sma(df, sma_slow, "SMA_SLOW")
+    df = add_ema(df, ema_fast, "EMA_FAST")
+    df = add_ema(df, ema_slow, "EMA_SLOW")
     # Power candle: start slightly looser; tighten later
     df = add_power_candle_flags(df, lookback=10, close_near_top=0.35, body_ratio_min=0.50)
     df = df.dropna().copy()
 
     # inject params
-    RegimeSmaPowerLong.sma_fast = sma_fast
-    RegimeSmaPowerLong.sma_slow = sma_slow
+    RegimeEmaPowerLongShort.ema_fast = ema_fast
+    RegimeEmaPowerLongShort.ema_slow = ema_slow
 
-    # Use higher cash because backtesting.py doesn't support fractional sizing by default (BTC would not trade at $10k)
-    bt = Backtest(df, RegimeSmaPowerLong, cash=1_000_000, commission=commission)
+    # Use higher cash because backtesting.py doesn't support fractional sizing by default
+    bt = Backtest(df, RegimeEmaPowerLongShort, cash=1_000_000, commission=commission)
     stats = bt.run()
 
     trades = int(len(stats["_trades"]))
@@ -162,8 +171,8 @@ def main():
     ap.add_argument("--symbols", default="BTC/USDT,ETH/USDT,SOL/USDT,BNB/USDT")
     ap.add_argument("--timeframe", default="5m")
     ap.add_argument("--commission", type=float, default=0.001)
-    ap.add_argument("--sma-fast", type=int, default=20)
-    ap.add_argument("--sma-slow", type=int, default=50)
+    ap.add_argument("--ema-fast", type=int, default=20)
+    ap.add_argument("--ema-slow", type=int, default=50)
     ap.add_argument("--out", default="reports/regime_sma_power_basket.json")
     args = ap.parse_args()
 
@@ -180,7 +189,7 @@ def main():
             per[sym] = {"error": f"missing {csv}"}
             continue
         df5 = load_csv(csv)
-        r = backtest_symbol(df5, args.commission, args.sma_fast, args.sma_slow)
+        r = backtest_symbol(df5, args.commission, args.ema_fast, args.ema_slow)
         r.symbol = sym
         per[sym] = {
             "trades": r.trades,
@@ -201,7 +210,7 @@ def main():
     out = {
         "asof": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "model": "15m regime+confidence (heuristic) -> 5m SMA trend + power candle entry",
-        "params": {"sma_fast": args.sma_fast, "sma_slow": args.sma_slow},
+        "params": {"ema_fast": args.ema_fast, "ema_slow": args.ema_slow},
         "exchange": args.exchange,
         "timeframe": args.timeframe,
         "commission": args.commission,
