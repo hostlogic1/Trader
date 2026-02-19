@@ -36,7 +36,7 @@
   "next_run_et": "2026-02-18T23:00:00-05:00",
   "notes": "Extensive testing of multiple entry signals on 5m SOL/USDT (180d, mostly bearish). All tested approaches (stoch cluster, stoch bounce, momentum pullback, EMA cross+ADX, RSI mean-reversion) produce ~30% win rate and PF 0.13-0.34 even with regime gating (2400-bar SMA). Root cause: 5m intrabar noise exceeds signal predictiveness for these indicators. Next steps: (1) test on 15m/1h timeframe for better signal quality, (2) try volume-profile / order-flow based entries, (3) consider multi-timeframe confirmation (1h trend + 5m entry). New files added: signals_bounce.py, signals_momentum.py, strategy_multi.py, strategy_ema_adx.py, run_multi_backtest.py, run_ema_adx_backtest.py.",
   "phase": "research",
-  "pipeline_step": "fetch_5m",
+  "pipeline_step": "market_structure",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
