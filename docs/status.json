@@ -1,5 +1,5 @@
 {
-  "current_task": "Expanding universe: fetch + basket backtest (5m)",
+  "current_task": "Regime audit (ER + ATR% heuristic)",
   "last_backtest": {
     "asof": "2026-02-19T08:00:48+00:00",
     "exchange": "binanceus",
@@ -36,7 +36,7 @@
     "regime_filter": "2400-bar SMA reduces drawdown but does not fix low PF"
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Basket backtest complete. Total trades=119. Next: regime audit.",
+  "notes": "Option 3: auditing TRENDING/RANGING/VOLATILE distribution (heuristic). Next: summarize + set plan for hourly cycle.",
   "phase": "research",
   "pipeline_step": "regime_audit",
   "schedule": {
@@ -45,5 +45,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T08:00:48+00:00"
+  "updated_at": "2026-02-19T09:00:04+00:00"
 }
