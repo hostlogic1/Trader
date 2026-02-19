@@ -1,5 +1,5 @@
 {
-  "current_task": "Entry logic R&D: signal quality assessment",
+  "current_task": "Market structure audit (15m key levels + HH/HL counts)",
   "last_backtest": {
     "asof": "2026-02-19T02:00:13+00:00",
     "exchange": "binanceus",
@@ -34,7 +34,7 @@
     "regime_filter": "2400-bar SMA reduces drawdown but does not fix low PF"
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Extensive testing of multiple entry signals on 5m SOL/USDT (180d, mostly bearish). All tested approaches (stoch cluster, stoch bounce, momentum pullback, EMA cross+ADX, RSI mean-reversion) produce ~30% win rate and PF 0.13-0.34 even with regime gating (2400-bar SMA). Root cause: 5m intrabar noise exceeds signal predictiveness for these indicators. Next steps: (1) test on 15m/1h timeframe for better signal quality, (2) try volume-profile / order-flow based entries, (3) consider multi-timeframe confirmation (1h trend + 5m entry). New files added: signals_bounce.py, signals_momentum.py, strategy_multi.py, strategy_ema_adx.py, run_multi_backtest.py, run_ema_adx_backtest.py.",
+  "notes": "Option 1: auditing 15m/1h pivots from 5m data as a precursor to causal key-level zones + BOS reversal logic.",
   "phase": "research",
   "pipeline_step": "market_structure",
   "schedule": {
@@ -43,5 +43,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T07:20:02+00:00"
+  "updated_at": "2026-02-19T08:00:06+00:00"
 }
