@@ -1,5 +1,5 @@
 {
-  "current_task": "Running 5m baseline backtest (cluster+sequence)",
+  "current_task": "Tuning cluster/sequence params (light grid)",
   "last_backtest": {
     "asof": "2026-02-19T11:00:13+00:00",
     "exchange": "binanceus",
@@ -34,8 +34,8 @@
     "regime_filter": "2400-bar SMA reduces drawdown but does not fix low PF"
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Goal: get stable trade generation; next step is parameter tuning for trade frequency + profit factor.",
-  "phase": "research",
+  "notes": "Searching for higher profit factor while increasing trade count. Next: apply best params + rerun backtest.",
+  "phase": "tuning",
   "pipeline_step": "tune_params",
   "schedule": {
     "expr": "0 * * * *",
@@ -43,5 +43,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T11:00:13+00:00"
+  "updated_at": "2026-02-19T11:00:18+00:00"
 }
