@@ -9,7 +9,7 @@ import ccxt
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--exchange", default="binanceus")
+    ap.add_argument("--exchange", default="okx")
     ap.add_argument("--symbols", default="BTC/USDT,ETH/USDT,SOL/USDT,BNB/USDT")
     ap.add_argument("--timeframe", default="5m")
     ap.add_argument("--lookback-days", type=int, default=180)

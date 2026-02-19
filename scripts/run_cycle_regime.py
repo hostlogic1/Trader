@@ -52,18 +52,17 @@ def commit_push(msg: str) -> None:
 
 def main():
     # Ensure git uses deploy-key config
-    os.environ["GIT_SSH_COMMAND"] = os.environ.get(
-        "GIT_SSH_COMMAND", "ssh -F /data/.openclaw/workspace/.ssh/config"
-    )
+    # Always use deploy-key config for any git operations in cron
+    os.environ["GIT_SSH_COMMAND"] = "ssh -F /data/.openclaw/workspace/.ssh/config"
 
-    exchange = os.environ.get("TRADER_EXCHANGE", "binanceus")
+    exchange = os.environ.get("TRADER_EXCHANGE", "okx")
     timeframe = os.environ.get("TRADER_TIMEFRAME", "5m")
     commission = float(os.environ.get("TRADER_COMMISSION", "0.001"))
 
     # Default top-10-ish basket; can be overridden.
     symbols = os.environ.get(
         "TRADER_SYMBOLS",
-        "BTC/USDT,ETH/USDT,SOL/USDT,BNB/USDT,XRP/USDT,ADA/USDT,DOGE/USDT,AVAX/USDT,LINK/USDT,MATIC/USDT",
+        "BTC/USDT,ETH/USDT,SOL/USDT,BNB/USDT,XRP/USDT,ADA/USDT,DOGE/USDT,AVAX/USDT,LINK/USDT,TRX/USDT",
     )
 
     lookback_days = int(os.environ.get("TRADER_LOOKBACK_DAYS", "180"))

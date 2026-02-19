@@ -26,6 +26,8 @@ def _clean(x):
 
 def load_csv(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path, parse_dates=[0], index_col=0)
+    if len(df) == 0:
+        return df
     df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
     df.index = pd.to_datetime(df.index, utc=True)
     return df
@@ -189,6 +191,9 @@ def main():
             per[sym] = {"error": f"missing {csv}"}
             continue
         df5 = load_csv(csv)
+        if len(df5) == 0:
+            per[sym] = {"error": f"empty data file {csv}"}
+            continue
         r = backtest_symbol(df5, args.commission, args.ema_fast, args.ema_slow)
         r.symbol = sym
         per[sym] = {
