@@ -1,7 +1,7 @@
 {
-  "current_task": "Regime-only cycle: fetch universe + EMA power-candle L/S + coarse EMA search",
+  "current_task": "Regime-only cycle ERROR (run_regime_sma_power_basket failed)",
   "error": {
-    "asof": "2026-02-19T19:21:59+00:00",
+    "asof": "2026-02-19T19:24:25+00:00",
     "summary": "ValueError: OHLC `data` is empty (MATIC/USDT 5m dataset is empty)"
   },
   "last_backtest": {
@@ -65,7 +65,7 @@
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
   "notes": "Legacy stochastic pipeline disabled. This cycle updates regime+confidence strategy only.",
-  "phase": "research",
+  "phase": "error",
   "pipeline_step": "regime_only",
   "schedule": {
     "expr": "0 * * * *",
@@ -73,5 +73,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T19:23:35+00:00"
+  "updated_at": "2026-02-19T19:24:25+00:00"
 }
