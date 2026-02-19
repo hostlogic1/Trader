@@ -1,5 +1,5 @@
 {
-  "current_task": "Regime-only cycle: fetch universe + EMA power-candle L/S + coarse EMA search",
+  "current_task": "Regime-only cycle complete",
   "error": {
     "asof": "2026-02-19T19:24:25+00:00",
     "summary": "ValueError: OHLC `data` is empty (MATIC/USDT 5m dataset is empty)"
@@ -23,48 +23,19 @@
     "note": "If best is null, we need additional entry modes and/or basket expansion (not just parameter tweaks)."
   },
   "last_research": {
-    "asof": "2026-02-19T16:11:45+00:00",
+    "asof": "2026-02-19T20:00:29+00:00",
+    "best_ema_candidate": null,
     "model": "15m regime+confidence (heuristic) -> 5m SMA trend + power candle entry",
-    "note": "v0 is TRENDING/UNKNOWN-only and still low trade count. Next: (1) tighten regime mapping + add hysteresis, (2) add RANGING strategy at 15m key levels, (3) coarse SMA sweep on Top10.",
+    "note": "Next: implement RANGING key-level module + regime hysteresis/confidence and rerun.",
     "params": {
-      "sma_fast": 20,
-      "sma_slow": 50
+      "ema_fast": 20,
+      "ema_slow": 50
     },
-    "per_symbol": {
-      "BNB/USDT": {
-        "max_drawdown_pct": -0.3658235750000016,
-        "profit_factor": 2.1504381022741255,
-        "return_pct": 0.22926735366757492,
-        "sharpe": 0.8569049483798042,
-        "trades": 3
-      },
-      "BTC/USDT": {
-        "max_drawdown_pct": -0.6250513152248671,
-        "profit_factor": 0.7852881973213826,
-        "return_pct": -0.05167513901320053,
-        "sharpe": -0.21719911638039333,
-        "trades": 2
-      },
-      "ETH/USDT": {
-        "max_drawdown_pct": -1.6768766071531882,
-        "profit_factor": 1.0210509882465533,
-        "return_pct": 0.019095976220956073,
-        "sharpe": 0.020767678291996685,
-        "trades": 7
-      },
-      "SOL/USDT": {
-        "max_drawdown_pct": -1.4434766430981183,
-        "profit_factor": 0.7552372608850109,
-        "return_pct": -0.41567392601373143,
-        "sharpe": -0.4574039703982677,
-        "trades": 7
-      }
-    },
-    "total_trades": 19,
-    "weighted_profit_factor": 1.0766267602834785
+    "total_trades": 2,
+    "weighted_profit_factor": null
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Legacy stochastic pipeline disabled. This cycle updates regime+confidence strategy only.",
+  "notes": "Next: implement RANGING key-level module + regime hysteresis/confidence and rerun.",
   "phase": "research",
   "pipeline_step": "regime_only",
   "schedule": {
@@ -73,5 +44,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T20:00:03+00:00"
+  "updated_at": "2026-02-19T20:00:29+00:00"
 }
