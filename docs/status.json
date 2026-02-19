@@ -12,12 +12,11 @@
     "trades": 22
   },
   "last_optimization": {
-    "asof": "2026-02-18T23:06:23+00:00",
+    "asof": "2026-02-19T11:03:21+00:00",
     "best": null,
     "evaluations": 72,
     "kind": "grid",
-    "min_trades_guardrail": 200,
-    "note": "Cluster+sequence trigger is too selective on SOL/USDC 5m; max ~7 trades across grid. Need more entry modes and/or multi-symbol basket."
+    "note": "If best is null, we need additional entry modes and/or basket expansion (not just parameter tweaks)."
   },
   "last_research": {
     "approaches_tested": [
@@ -36,12 +35,12 @@
   "next_run_et": "2026-02-19T03:00:00-05:00",
   "notes": "Searching for higher profit factor while increasing trade count. Next: apply best params + rerun backtest.",
   "phase": "tuning",
-  "pipeline_step": "tune_params",
+  "pipeline_step": "regime_audit",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T11:00:18+00:00"
+  "updated_at": "2026-02-19T11:03:21+00:00"
 }
