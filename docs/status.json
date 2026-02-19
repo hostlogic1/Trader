@@ -1,17 +1,15 @@
 {
   "current_task": "Running 5m baseline backtest (cluster+sequence)",
   "last_backtest": {
-    "asof": "2026-02-19T08:00:48+00:00",
+    "asof": "2026-02-19T11:00:13+00:00",
     "exchange": "binanceus",
+    "max_drawdown_pct": -6.062708042114229,
     "model": "cluster+sequence (looser baseline)",
-    "symbols": [
-      "SOL/USDT",
-      "BTC/USDT",
-      "ETH/USDT",
-      "BNB/USDT"
-    ],
+    "profit_factor": 0.852836357897934,
+    "return_pct": -1.2659617083724153,
+    "symbol": "SOL/USDT",
     "timeframe": "5m",
-    "total_trades": 119
+    "trades": 22
   },
   "last_optimization": {
     "asof": "2026-02-18T23:06:23+00:00",
@@ -38,12 +36,12 @@
   "next_run_et": "2026-02-19T03:00:00-05:00",
   "notes": "Goal: get stable trade generation; next step is parameter tuning for trade frequency + profit factor.",
   "phase": "research",
-  "pipeline_step": "backtest_5m",
+  "pipeline_step": "tune_params",
   "schedule": {
     "expr": "0 * * * *",
     "kind": "cron",
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-19T11:00:03+00:00"
+  "updated_at": "2026-02-19T11:00:13+00:00"
 }
