@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OpenClaw Memory Add-on — Implementation Report</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:#0b0f14; color:#e8eef5; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 26px 16px 40px; }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    .sub { color:#a9b6c5; margin: 0 0 18px; }
+    h2 { margin-top: 24px; font-size: 16px; color:#c8d6e5; }
+    h3 { margin-top: 16px; font-size: 14px; color:#c8d6e5; }
+    p, li { color:#e8eef5; line-height: 1.45; }
+    code, pre { background:#0a1220; border:1px solid #223046; border-radius: 10px; }
+    code { padding: 2px 6px; }
+    pre { padding: 12px; overflow:auto; }
+    a { color:#7ab7ff; }
+    .card { background:#111826; border:1px solid #223046; border-radius: 14px; padding: 14px; margin: 12px 0; }
+    .small { color:#a9b6c5; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>OpenClaw Memory Add-on — Implementation Report</h1>
+    <div class="sub">Source project: <a href="https://github.com/mdkrush/openclaw-jarvis-memory">mdkrush/openclaw-jarvis-memory</a> • Generated: 2026-02-20</div>
+
+    <div class="card">
+      <div class="small">Quick takeaway</div>
+      <p>This repo is a <b>blueprint + scripts</b> for adding persistent memory to OpenClaw using a 3-layer approach: (1) Redis buffer for captured turns, (2) optional daily markdown logs, and (3) Qdrant vector DB for long-term semantic memory using Ollama embeddings. It can work on our VPS, but needs path/config updates (workspace is <code>/data/.openclaw/workspace</code>, not <code>~/.openclaw/workspace</code>) and security hardening (bind services to localhost; consider PII retention/redaction).</p>
+    </div>
+
+    <h2>1) What the project does / how memory is implemented</h2>
+    <ul>
+      <li><b>Layer 1 — Redis short-term buffer</b>: captures OpenClaw session JSONL turns into Redis list keys (e.g., <code>mem:&lt;user_id&gt;</code>). New in v1.5.0: token-free capture reads JSONL files directly and tracks byte offsets.</li>
+      <li><b>Layer 2 — Daily .md logs</b>: conceptually uses <code>workspace/memory/YYYY-MM-DD.md</code> as a human audit trail. Some scripts exist but parts are not portable as-written.</li>
+      <li><b>Layer 3 — Qdrant long-term memory</b>: stores semantic vectors in Qdrant collection (default <code>kimi_memories</code>) using Ollama embeddings (default model <code>snowflake-arctic-embed2</code>).</li>
+    </ul>
+
+    <h2>2) Compatibility with our OpenClaw setup</h2>
+    <ul>
+      <li>Core approach works if scripts point to our real paths (sessions + workspace) and services are reachable.</li>
+      <li>We must override defaults to use <code>/data/.openclaw/workspace</code> and the correct sessions dir under <code>/data/.openclaw/agents/...</code>.</li>
+      <li>Some scripts are hardcoded to <code>/root</code> paths and LAN IPs; those should not be run unchanged.</li>
+    </ul>
+
+    <h2>3) Step-by-step implementation plan (safe / explicit)</h2>
+
+    <h3>Phase A — Decide deployment model</h3>
+    <ul>
+      <li>Run <b>Redis + Qdrant + Ollama via Docker</b> on the VPS host (recommended).</li>
+      <li>Use <b>token-free capture</b> (<code>cron_capture.py</code> every N minutes) + daily backup (<code>cron_backup.py</code>).</li>
+    </ul>
+
+    <h3>Phase B — Bring up services</h3>
+    <ul>
+      <li>Use a docker-compose with ports bound to <b>localhost only</b> (security): <code>127.0.0.1:6379</code>, <code>127.0.0.1:6333</code>, <code>127.0.0.1:11434</code>.</li>
+      <li>Persist volumes for Redis/Qdrant/Ollama.</li>
+    </ul>
+
+    <h3>Phase C — Configure env paths</h3>
+    <p>Create a config file (example):</p>
+    <pre>OPENCLAW_WORKSPACE=/data/.openclaw/workspace
+OPENCLAW_SESSIONS_DIR=/data/.openclaw/agents/main/sessions
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+QDRANT_URL=http://127.0.0.1:6333
+OLLAMA_URL=http://127.0.0.1:11434/v1
+USER_ID=&lt;your persistent user id&gt;</pre>
+
+    <h3>Phase D — Enable automation</h3>
+    <ul>
+      <li>Every 5 minutes: run token-free capture to append new turns to Redis.</li>
+      <li>Daily at 03:00: flush Redis turns into Qdrant (dedup via content hash).</li>
+    </ul>
+
+    <h2>4) Security / privacy notes</h2>
+    <ul>
+      <li><b>PII retention</b>: you are storing conversation text; consider redaction and retention policies.</li>
+      <li><b>No auth by default</b>: Redis/Qdrant are unauthenticated; bind to localhost and protect with firewall; optionally add auth/TLS.</li>
+      <li><b>Backups/logs</b> may contain sensitive info; protect permissions and avoid public storage.</li>
+    </ul>
+
+    <h2>5) What you need to provide</h2>
+    <ul>
+      <li>Confirm the exact sessions directory on this VPS (JSONL logs path).</li>
+      <li>Decide scope (which chats/sessions to capture) and the persistent USER_ID scheme.</li>
+      <li>Confirm whether we can install/run Docker services (or provide hosted endpoints).</li>
+    </ul>
+
+    <h2>6) Rollback plan</h2>
+    <ul>
+      <li>Disable timers/cron entries.</li>
+      <li><code>docker compose down</code> (keep volumes) or delete volumes only if you explicitly want to erase data.</li>
+      <li>Remove the added scripts/config files.</li>
+    </ul>
+
+    <div class="card">
+      <div class="small">Next suggestion</div>
+      <p>We can implement this in our environment with a <b>workspace-local</b> folder (e.g., <code>/data/.openclaw/workspace/memory_system/</code>), and then decide whether to inject memory automatically at session start or keep it as manual commands first.</p>
+    </div>
+
+  </div>
+</body>
+</html>
