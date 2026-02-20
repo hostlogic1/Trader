@@ -1,5 +1,5 @@
 {
-  "current_task": "Regime-only cycle: fetch universe + EMA power-candle L/S + coarse EMA search",
+  "current_task": "Regime-only cycle complete",
   "error": {
     "asof": "2026-02-19T19:24:25+00:00",
     "summary": "ValueError: OHLC `data` is empty (MATIC/USDT 5m dataset is empty)"
@@ -23,7 +23,7 @@
     "note": "If best is null, we need additional entry modes and/or basket expansion (not just parameter tweaks)."
   },
   "last_research": {
-    "asof": "2026-02-20T08:00:35+00:00",
+    "asof": "2026-02-20T09:00:31+00:00",
     "best_ema_candidate": null,
     "model": "15m regime+confidence (heuristic) -> 5m SMA trend + power candle entry",
     "note": "Next: implement RANGING key-level module + regime hysteresis/confidence and rerun.",
@@ -35,7 +35,7 @@
     "weighted_profit_factor": null
   },
   "next_run_et": "2026-02-19T03:00:00-05:00",
-  "notes": "Legacy stochastic pipeline disabled. This cycle updates regime+confidence strategy only.",
+  "notes": "Next: implement RANGING key-level module + regime hysteresis/confidence and rerun.",
   "phase": "research",
   "pipeline_step": "regime_only",
   "schedule": {
@@ -44,5 +44,5 @@
     "summary": "Every hour, on the hour (ET)",
     "tz": "America/New_York"
   },
-  "updated_at": "2026-02-20T09:00:04+00:00"
+  "updated_at": "2026-02-20T09:00:31+00:00"
 }
