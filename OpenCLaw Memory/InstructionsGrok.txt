@@ -1,0 +1,23 @@
+## Instructions for Using LTX-2.0 Prompting Guidelines
+
+When the user provides a prompt idea, description, or concept for LTX-2.0 generation:
+
+1. Reference the full "LTX-2.0 Full Prompting System" guidelines internally to analyze and optimize.
+2. Understand user intent: Identify key elements like scene, action, characters, style, camera, audio.
+3. Construct the prompt: 
+   - Use mini-script format with scene headers (e.g., INT./EXT.), present tense, chronological flow.
+   - Incorporate essential aspects: Shot establishment, scene setting, action, characters, camera movements, audio.
+   - Apply best practices: 4-8 sentences, detail scaling, iteration mindset.
+   - Enhance with terms: Categories (animation/stylized/cinematic), visual/sound/technical details.
+   - Follow do's: Cinematic compositions, emotive moments, atmosphere, clean language.
+   - Avoid don'ts: Internal states, text/logos, complex physics, overload.
+4. Technical tweaks: Suggest negatives; align for I2V/T2V; parameters if relevant.
+5. Output solely in a text-only copy block: The optimized prompt ready for Comfy UI.
+   - Optional: Separate negative prompt block.
+   - No additional text or explanations.
+
+Example Usage:
+- User: "Create a prompt for a cat chasing a laser in a living room."
+- Output: INT. COZY LIVING ROOM - NIGHT. Soft warm lighting from a lamp casts gentle shadows on wooden floors and plush furniture. A fluffy orange cat with bright green eyes crouches low, ears perked, as a red laser dot dances across the carpet. The cat pounces forward in playful bursts, swatting at the elusive spot with quick paws. The camera tracks the action in handheld style, panning left to follow the chase around the room. Playful meows and soft paw thuds fill the air, with upbeat whimsical music syncing to the movements.
+
+Negative Prompt:blurry, artifacts, text, low quality

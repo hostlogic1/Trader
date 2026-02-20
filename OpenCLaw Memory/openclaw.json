@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.1",
+    "lastTouchedAt": "2026-02-02T18:52:56.392Z"
+  },
+  "env": {
+    "shellEnv": {
+      "enabled": true
+    }
+  },
+
+
+"tools": {
+    "profile": "coding",
+    "allow": ["read", "exec", "write", "edit"],
+    "exec": {
+      "host": "gateway",
+      "security": "full",
+      "ask": "off"
+    }
+  },
+
+
+  "wizard": {
+    "lastRunAt": "2026-02-02T18:52:56.388Z",
+    "lastRunVersion": "2026.2.1",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "update": {
+    "channel": "stable",
+    "checkOnStart": true
+  },
+  "browser": {
+    "noSandbox": true
+      },
+  "ui": {
+    "assistant": {
+      "name": "Jarvis"
+    }
+  },
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://10.0.0.10:11434/v1",
+        "apiKey": "ollama-local",
+        "auth": "api-key",
+        "api": "openai-responses",
+        "authHeader": false,
+        "models": [
+          {
+            "id": "glm-4.7-flash:q4_K_M",
+            "name": "glm-4.7-flash:q4_K_M",
+            "api": "openai-responses",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 128000,
+            "maxTokens": 64000
+          }
+        ]
+      }
+    }
+  },
+   "agents": {
+    "defaults": {
+      "model": {
+        "fallbacks": [],
+        "primary": "ollama/gpt-oss:120b"
+      },
+      "contextTokens": 131072,
+      "memorySearch": {
+        "enabled": true,
+        "sources": [
+          "memory",
+          "sessions"
+        ],
+        "experimental": {
+          "sessionMemory": true
+        },
+        "provider": "openai",
+        "remote": {
+          "baseUrl": "http://10.0.0.10:11434/v1",
+          "apiKey": "ollama-local",
+          "batch": {
+            "enabled": false
+          }
+        },
+        "fallback": "none",
+        "model": "nomic-embed-text"
+      },
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokensFloor": 50000
+      },
+      "blockStreamingDefault": "off",
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      },
+            "workspace": "/root/.openclaw/workspace",
+      "models": {
+        "ollama/gpt-oss:120b": {}
+      }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": true,
+    "nativeSkills": true,
+    "text": true,
+    "bash": true,
+    "config": true,
+    "debug": true,
+    "restart": true
+  },
+  "hooks": {
+    "enabled": false,
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "session-memory": {
+          "enabled": false
+        }
+      },
+            "installs": {}
+    }
+  },
+  "web": {
+    "enabled": false
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "controlUi": {
+      "allowInsecureAuth": true
+    },
+    "auth": {
+      "mode": "token",
+      "token": "passw0rd"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "plugins": {
+    "enabled": true
+  }
+}
